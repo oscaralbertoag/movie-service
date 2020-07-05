@@ -1,0 +1,5 @@
+CREATE TABLE movies (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    summary VARCHAR(250) NOT NULL
+);
