@@ -1,34 +1,24 @@
 package com.developer.productivity.sample.movieservice.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "movies")
 public class Movie {
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private long id;
 
+  private String id;
   private String name;
   private String summary;
 
   public Movie() {}
 
-  public Movie(long id, String name, String summary) {
+  public Movie(String id, String name, String summary) {
     this.id = id;
     this.name = name;
     this.summary = summary;
   }
 
-  public long getId() {
+  public String getId() {
     return id;
   }
 
-  public Movie setId(long id) {
+  public Movie setId(String id) {
     this.id = id;
     return this;
   }

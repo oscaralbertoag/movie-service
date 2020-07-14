@@ -1,6 +1,5 @@
-package com.developer.productivity.sample.movieservice.controller.service;
+package com.developer.productivity.sample.movieservice.service;
 
-import com.developer.productivity.sample.movieservice.dto.MovieDto;
 import com.developer.productivity.sample.movieservice.model.Movie;
 
 import java.util.List;
@@ -11,9 +10,9 @@ public interface MovieService {
 
     Movie createMovie(Movie movie);
 
-    void deleteMovie(Long id);
+    void deleteMovie(String id);
 
-    Movie getMovieById(Long id);
+    Movie getMovieById(String id);
 
     Movie replaceMovie(Movie movie);
 }

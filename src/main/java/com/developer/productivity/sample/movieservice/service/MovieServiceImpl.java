@@ -1,4 +1,4 @@
-package com.developer.productivity.sample.movieservice.controller.service;
+package com.developer.productivity.sample.movieservice.service;
 
 import com.developer.productivity.sample.movieservice.dao.MovieDao;
 import com.developer.productivity.sample.movieservice.model.Movie;
@@ -22,16 +22,16 @@ public class MovieServiceImpl implements MovieService {
 
   @Override
   public Movie createMovie(Movie movie) {
-    return movieDao.getById(movieDao.save(movie).getId());
+    return movieDao.getById(movieDao.createMovie(movie).getId());
   }
 
   @Override
-  public void deleteMovie(Long id) {
+  public void deleteMovie(String id) {
     movieDao.deleteById(id);
   }
 
   @Override
-  public Movie getMovieById(Long id) {
+  public Movie getMovieById(String id) {
     return movieDao.getById(id);
   }
 
@@ -40,8 +40,8 @@ public class MovieServiceImpl implements MovieService {
     Movie original = movieDao.getById(movie.getId());
     if (original == null) {
       throw new IllegalArgumentException(
-          String.format("Movie id provided does not exist! ID:%d", movie.getId()));
+          String.format("Movie id provided does not exist! ID:%s", movie.getId()));
     }
-    return movieDao.save(movie);
+    return movieDao.updateMovie(movie);
   }
 }

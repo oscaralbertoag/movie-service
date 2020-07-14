@@ -3,7 +3,7 @@ package com.developer.productivity.sample.movieservice.dto;
 import java.util.Objects;
 
 public class MovieDto {
-  private long id;
+  private String id;
   private String name;
   private String summary;
 
@@ -18,11 +18,11 @@ public class MovieDto {
     return this;
   }
 
-  public long getId() {
+  public String getId() {
     return id;
   }
 
-  public MovieDto setId(long id) {
+  public MovieDto setId(String id) {
     this.id = id;
     return this;
   }
