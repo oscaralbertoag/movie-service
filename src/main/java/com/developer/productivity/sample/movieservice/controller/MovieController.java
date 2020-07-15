@@ -1,5 +1,6 @@
 package com.developer.productivity.sample.movieservice.controller;
 
+import com.developer.productivity.sample.movieservice.dto.ContributorDto;
 import com.developer.productivity.sample.movieservice.dto.MovieDto;
 import com.developer.productivity.sample.movieservice.model.Movie;
 import com.developer.productivity.sample.movieservice.service.MovieService;
@@ -47,7 +48,31 @@ public class MovieController {
   }
 
   @PutMapping("/movies/{id}")
-  public Movie replaceMovie(@RequestBody Movie movie, @PathVariable("id") String id) {
-    return movieService.replaceMovie(movie.setId(id));
+  public MovieDto replaceMovie(@RequestBody Movie movie, @PathVariable("id") String id) {
+    return MovieTransformer.toMovieDto(movieService.replaceMovie(movie.setId(id)));
+  }
+
+  @PostMapping("/movies/{id}/contributors")
+  public List<ContributorDto> addMovieContributors(
+      @PathVariable("id") String id, @RequestBody List<String> contributorIds) {
+    return movieService.addMovieContributors(id, contributorIds).stream()
+        .map(MovieTransformer::toContributorDto)
+        .collect(Collectors.toList());
+  }
+
+  @GetMapping("movies/{id}/contributors")
+  public List<ContributorDto> getAllMovieContributors(@PathVariable("id") String id) {
+    return movieService.getMovieContributors(id).stream()
+        .map(MovieTransformer::toContributorDto)
+        .collect(Collectors.toList());
+  }
+
+  @DeleteMapping("movies/{movieId}/contributors/{contributorId}")
+  public List<ContributorDto> removeMovieContributor(
+      @PathVariable("movieId") String movieId,
+      @PathVariable("contributorId") String contributorId) {
+    return movieService.removeMovieContributor(movieId, contributorId).stream()
+        .map(MovieTransformer::toContributorDto)
+        .collect(Collectors.toList());
   }
 }

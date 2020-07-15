@@ -12,4 +12,6 @@ public interface ContributorDao {
   Contributor createContributor(Contributor contributor);
 
   Contributor getContributorById(String id);
+
+  List<Contributor> getAllContributors();
 }

@@ -1,12 +1,18 @@
 package com.developer.productivity.sample.movieservice.dao;
 
+import com.developer.productivity.sample.movieservice.model.Contributor;
+import com.developer.productivity.sample.movieservice.model.ContributorType;
 import com.developer.productivity.sample.movieservice.model.Movie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,10 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MovieDaoImplTest {
 
   private final MovieDao movieDao;
+  private final ContributorDao contributorDao;
 
   @Autowired
   public MovieDaoImplTest(DataSource dataSource) {
     movieDao = new MovieDaoImpl(dataSource);
+    contributorDao = new ContributorDaoImpl(dataSource);
   }
 
   @Test
@@ -183,5 +191,98 @@ class MovieDaoImplTest {
         "Carol Danvers becomes one of the universe's most powerful heroes "
             + "when Earth is caught in the middle of a galactic war between two alien races.",
         result.getSummary());
+  }
+
+  @Test
+  public void addMovieContributorsReturnsAllAddedRecords() {
+    // GIVEN: a movie
+    Movie blackPanther =
+        movieDao.createMovie(
+            new Movie()
+                .setName("Black Panther")
+                .setSummary(
+                    "T'Challa, heir to the hidden but advanced kingdom of Wakanda,"
+                        + " must step forward to lead his people into a new "
+                        + "future and must confront a challenger from his country's past."));
+    // AND: a few contributors
+    Contributor rCoogler =
+        contributorDao.createContributor(
+            new Contributor()
+                .setFirstName("Ryan")
+                .setLastName("Coogler")
+                .setContributorType(new ContributorType().setId(2L)));
+    Contributor lWright =
+        contributorDao.createContributor(
+            new Contributor()
+                .setFirstName("Letitia")
+                .setLastName("Wright")
+                .setContributorType(new ContributorType().setId(1L)));
+    Contributor hAtwell =
+        contributorDao.createContributor(
+            new Contributor()
+                .setFirstName("Hayley")
+                .setLastName("Atwell")
+                .setContributorType(new ContributorType().setId(1L)));
+
+    // WHEN: contributors are added to a movie
+    List<Contributor> results =
+        movieDao.addMovieContributors(
+            blackPanther.getId(), Arrays.asList(rCoogler.getId(), lWright.getId()));
+
+    // THEN: only this movie's records are returned
+    assertEquals(2, results.size());
+    Map<String, Contributor> resultsMap =
+        results.stream().collect(Collectors.toMap(Contributor::getFirstName, Function.identity()));
+    // AND: their fields are mapped correctly
+    Contributor ryanResult = resultsMap.get("Ryan");
+    assertEquals("Ryan", ryanResult.getFirstName());
+    assertEquals("Coogler", ryanResult.getLastName());
+    assertEquals("Director", ryanResult.getContributorType().getName());
+    assertEquals(2L, ryanResult.getContributorType().getId());
+    Contributor letitia = resultsMap.get("Letitia");
+    assertEquals("Letitia", letitia.getFirstName());
+    assertEquals("Wright", letitia.getLastName());
+    assertEquals("Actor", letitia.getContributorType().getName());
+    assertEquals(1L, letitia.getContributorType().getId());
+  }
+
+  @Test
+  public void removeMovieContributorRemovesRecordAndReturnsUpdatedContributors() {
+    // GIVEN: a movie
+    Movie blackPanther =
+        movieDao.createMovie(
+            new Movie()
+                .setName("Black Panther")
+                .setSummary(
+                    "T'Challa, heir to the hidden but advanced kingdom of Wakanda,"
+                        + " must step forward to lead his people into a new "
+                        + "future and must confront a challenger from his country's past."));
+    // AND: a few contributors
+    Contributor rCoogler =
+        contributorDao.createContributor(
+            new Contributor()
+                .setFirstName("Ryan")
+                .setLastName("Coogler")
+                .setContributorType(new ContributorType().setId(2L)));
+    Contributor lWright =
+        contributorDao.createContributor(
+            new Contributor()
+                .setFirstName("Letitia")
+                .setLastName("Wright")
+                .setContributorType(new ContributorType().setId(1L)));
+    List<Contributor> movieContributors =
+        movieDao.addMovieContributors(
+            blackPanther.getId(), Arrays.asList(rCoogler.getId(), lWright.getId()));
+
+    // WHEN: a movie contributor is removed
+    List<Contributor> results =
+        movieDao.removeMovieContributor(blackPanther.getId(), rCoogler.getId());
+
+    // THEN: the record is removed and the remaining records are returned
+    assertEquals(1, results.size());
+    assertEquals("Letitia", results.get(0).getFirstName());
+    assertEquals("Wright", results.get(0).getLastName());
+    assertEquals("Actor", results.get(0).getContributorType().getName());
+    assertEquals(1L, results.get(0).getContributorType().getId());
   }
 }

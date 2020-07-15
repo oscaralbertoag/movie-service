@@ -1,6 +1,7 @@
 package com.developer.productivity.sample.movieservice.service;
 
 import com.developer.productivity.sample.movieservice.dao.MovieDao;
+import com.developer.productivity.sample.movieservice.model.Contributor;
 import com.developer.productivity.sample.movieservice.model.Movie;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,20 @@ public class MovieServiceImpl implements MovieService {
           String.format("Movie id provided does not exist! ID:%s", movie.getId()));
     }
     return movieDao.updateMovie(movie);
+  }
+
+  @Override
+  public List<Contributor> addMovieContributors(String movieId, List<String> contributorIds) {
+    return movieDao.addMovieContributors(movieId, contributorIds);
+  }
+
+  @Override
+  public List<Contributor> getMovieContributors(String movieId) {
+    return movieDao.getAllMovieContributors(movieId);
+  }
+
+  @Override
+  public List<Contributor> removeMovieContributor(String movieId, String contributorId) {
+    return movieDao.removeMovieContributor(movieId, contributorId);
   }
 }

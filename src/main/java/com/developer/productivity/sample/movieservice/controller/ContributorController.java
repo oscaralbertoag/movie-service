@@ -5,6 +5,7 @@ import com.developer.productivity.sample.movieservice.dto.ContributorTypeDto;
 import com.developer.productivity.sample.movieservice.service.ContributorService;
 import com.developer.productivity.sample.movieservice.transformer.ContributorTransformer;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +33,17 @@ public class ContributorController {
     return contributorService.getAllContributorTypes().stream()
         .map(ContributorTransformer::toContributorTypeDto)
         .collect(Collectors.toList());
+  }
+
+  @GetMapping("/contributors")
+  public List<ContributorDto> getAllContributors() {
+    return contributorService.getAllContributors().stream()
+        .map(ContributorTransformer::toContributorDto)
+        .collect(Collectors.toList());
+  }
+
+  @GetMapping("/contributors/{id}")
+  public ContributorDto getContributorById(@PathVariable("id") String id) {
+    return ContributorTransformer.toContributorDto(contributorService.getContributorById(id));
   }
 }

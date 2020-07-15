@@ -18,6 +18,15 @@ CREATE TABLE contributor (
     REFERENCES contributor_type(id)
 );
 
+CREATE TABLE movie_contributor (
+    id VARCHAR PRIMARY KEY,
+    movie_id VARCHAR NOT NULL,
+    contributor_id VARCHAR NOT NULL,
+    CONSTRAINT fk_movie_id FOREIGN KEY (movie_id)
+    REFERENCES movie(id),
+    CONSTRAINT fk_contributor_id FOREIGN KEY (contributor_id)
+    REFERENCES contributor(id)
+);
 
 INSERT INTO contributor_type (name)
 VALUES ('Actor'),

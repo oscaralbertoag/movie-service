@@ -3,6 +3,7 @@ package com.developer.productivity.sample.movieservice.dao;
 import com.developer.productivity.sample.movieservice.model.Contributor;
 import com.developer.productivity.sample.movieservice.model.ContributorType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,15 @@ public class ContributorDaoImpl implements ContributorDao {
 
   private final JdbcTemplate jdbcTemplate;
   private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+  private final RowMapper<Contributor> contributorRowMapper =
+      (rs, rowNum) ->
+          new Contributor()
+              .setId(rs.getString("contributor_id"))
+              .setLastName(rs.getString("last_name"))
+              .setFirstName(rs.getString("first_name"))
+              .setContributorType(
+                  new ContributorType(rs.getLong("contributor_type_id"), rs.getString("name")));
 
   public ContributorDaoImpl(DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -52,13 +62,16 @@ public class ContributorDaoImpl implements ContributorDao {
             + "JOIN contributor_type ct ON ct.id = c.contributor_type_id "
             + "WHERE c.id = :id",
         new MapSqlParameterSource().addValue("id", id),
-        (rs, rowNum) ->
-            new Contributor()
-                .setId(rs.getString("contributor_id"))
-                .setLastName(rs.getString("last_name"))
-                .setFirstName(rs.getString("first_name"))
-                .setContributorType(
-                    new ContributorType(rs.getLong("contributor_type_id"), rs.getString("name"))));
+        contributorRowMapper);
+  }
+
+  @Override
+  public List<Contributor> getAllContributors() {
+    return jdbcTemplate.query(
+        "SELECT c.id as contributor_id, c.last_name, c.first_name, c.contributor_type_id, ct.id, ct.name "
+            + "FROM contributor c "
+            + "JOIN contributor_type ct ON ct.id = c.contributor_type_id ",
+        contributorRowMapper);
   }
 
   private String generateId() {

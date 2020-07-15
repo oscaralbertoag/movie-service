@@ -25,4 +25,14 @@ public class ContributorServiceImpl implements ContributorService {
   public List<ContributorType> getAllContributorTypes() {
     return contributorDao.getAllContributorTypes();
   }
+
+  @Override
+  public List<Contributor> getAllContributors() {
+    return contributorDao.getAllContributors();
+  }
+
+  @Override
+  public Contributor getContributorById(String id) {
+    return contributorDao.getContributorById(id);
+  }
 }
