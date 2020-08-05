@@ -1,15 +1,8 @@
 package com.developer.productivity.sample.movieservice.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,15 +12,8 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-class ContributorControllerTest {
-
-  @LocalServerPort private int port;
-
-  @Autowired private TestRestTemplate restTemplate;
+class ContributorControllerTest extends BaseControllerTest {
 
   @Test
   public void getAllContributorTypesReturns200() {
@@ -107,6 +93,7 @@ class ContributorControllerTest {
     // AND: 2 contributors are returned
     ArrayNode arrayNode = (ArrayNode) getJsonResponse(responseEntity.getBody());
     assertNotNull(arrayNode);
+    assertEquals(2, arrayNode.size());
     // AND: all resources have the expected fields
     arrayNode.forEach(
         jsonNode -> {
@@ -147,24 +134,6 @@ class ContributorControllerTest {
     assertEquals("Smith", jsonResponse.get("lastName").asText());
     assertEquals(7L, jsonResponse.get("contributorType").get("id").asLong());
     assertEquals("Costume Designer", jsonResponse.get("contributorType").get("name").asText());
-  }
-
-  private String getUrl(String uri) {
-    return "http://localhost:" + port + uri;
-  }
-
-  private JsonNode getJsonResponse(String responseBody) {
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      return mapper.readTree(responseBody);
-    } catch (JsonProcessingException e) {
-      fail(
-          String.format(
-              "Unexpected error while trying to parse response JSON. Raw response body: %s",
-              responseBody),
-          e);
-      return null;
-    }
   }
 
   private ResponseEntity<String> createContributor(String request) {
