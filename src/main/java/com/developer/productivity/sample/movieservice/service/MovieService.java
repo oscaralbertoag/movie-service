@@ -1,6 +1,5 @@
 package com.developer.productivity.sample.movieservice.service;
 
-import com.developer.productivity.sample.movieservice.dto.ContributorDto;
 import com.developer.productivity.sample.movieservice.model.Contributor;
 import com.developer.productivity.sample.movieservice.model.Movie;
 
@@ -8,19 +7,67 @@ import java.util.List;
 
 public interface MovieService {
 
-    List<Movie> getAllMovies();
+  /**
+   * Retrieves all movies in the system
+   *
+   * @return non-null list of all movies in the system
+   */
+  List<Movie> getAllMovies();
 
-    Movie createMovie(Movie movie);
+  /**
+   * Creates a new movie
+   *
+   * @param movie object to create
+   * @return new movie
+   */
+  Movie createMovie(Movie movie);
 
-    void deleteMovie(String id);
+  /**
+   * Delete a movie (and its related data) by its given ID.
+   *
+   * @param id ID of movie to be deleted
+   */
+  void deleteMovie(String id);
 
-    Movie getMovieById(String id);
+  /**
+   * Retrieve a movie by its given ID
+   *
+   * @param id ID of movie to fetch
+   * @return movie matching the provided ID
+   */
+  Movie getMovieById(String id);
 
-    Movie replaceMovie(Movie movie);
+  /**
+   * Replace a movie completely with the provided movie
+   *
+   * @param movie object to replace the existing one
+   * @return the modified version of the movie object
+   */
+  Movie replaceMovie(Movie movie);
 
-    List<Contributor> addMovieContributors(String movieId, List<String> contributorIds);
+  /**
+   * Adds a contributor to an existing movie
+   *
+   * @param movieId ID of the movie that will receive the contributor
+   * @param contributorIds ID of the contributor to be added
+   * @return non-list of contributors currently associated with the provided movie ID
+   */
+  List<Contributor> addMovieContributors(String movieId, List<String> contributorIds);
 
-    List<Contributor> getMovieContributors(String movieId);
+  /**
+   * Retrieve all contributors currently associated with a particular movie
+   *
+   * @param movieId ID of the movie for which contributors will be fetched
+   * @return non-null list of contributors currently associated with the provided movie ID
+   */
+  List<Contributor> getMovieContributors(String movieId);
 
-    List<Contributor> removeMovieContributor(String movieId, String contributorId);
+  /**
+   * Remove a contributor from a particular movie
+   *
+   * @param movieId ID of the movie from which a contributor will be removed
+   * @param contributorId ID of the contributor to remove
+   * @return non-null list of contributors currently associated with the provided movie ID
+   */
+  List<Contributor> removeMovieContributor(String movieId, String contributorId);
 }
