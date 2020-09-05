@@ -28,6 +28,9 @@ public class MovieServiceImpl implements MovieService {
 
   @Override
   public void deleteMovie(String id) {
+    movieDao
+        .getAllMovieContributors(id)
+        .forEach(movieContributor -> movieDao.removeMovieContributor(id, movieContributor.getId()));
     movieDao.deleteById(id);
   }
 
