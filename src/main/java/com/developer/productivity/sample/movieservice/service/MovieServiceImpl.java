@@ -3,6 +3,8 @@ package com.developer.productivity.sample.movieservice.service;
 import com.developer.productivity.sample.movieservice.dao.MovieDao;
 import com.developer.productivity.sample.movieservice.model.Contributor;
 import com.developer.productivity.sample.movieservice.model.Movie;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService {
 
   private final MovieDao movieDao;
+  Logger log = LoggerFactory.getLogger(MovieServiceImpl.class);
 
   public MovieServiceImpl(MovieDao movieDao) {
     this.movieDao = movieDao;
@@ -32,6 +35,7 @@ public class MovieServiceImpl implements MovieService {
         .getAllMovieContributors(id)
         .forEach(movieContributor -> movieDao.removeMovieContributor(id, movieContributor.getId()));
     movieDao.deleteById(id);
+    log.debug("Successfully deleted movie with ID:{} and all related data.", id);
   }
 
   @Override
